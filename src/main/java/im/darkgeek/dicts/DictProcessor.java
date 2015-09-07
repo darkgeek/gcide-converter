@@ -41,6 +41,7 @@ public class DictProcessor {
         if (dictContents == null || "".equals(dictContents))
             return new ArrayList<DictItem>(1);
 
+        List<DictItem> itemList = new ArrayList<DictItem>();
         Document document;
         try {
             document = DocumentHelper.parseText(dictContents);
@@ -49,13 +50,28 @@ public class DictProcessor {
             return new ArrayList<DictItem>(1);
         }
 
-        String currentWord;
+        DictItem currentDictItem = null;
         Element root = document.getRootElement();
         for (Iterator i = root.elementIterator("p"); i.hasNext();) {
             Element pElement = (Element) i.next();
             for (Iterator j = pElement.elementIterator(); j.hasNext();) {
-
+                Element currElement = (Element) j.next();
+                if (currElement.getName().equals("ent")) {
+                    String currText = currElement.getTextTrim();
+                    if (currentDictItem != null) {
+                        itemList.add(currentDictItem);
+                    }
+                    currentDictItem = new DictItem();
+                    currentDictItem.setWord(currText);
+                    currentDictItem.setExplanation("");
+                }
+                // TODO Handle other kinds of elements
+            }
+            if (currentDictItem != null) {
+                currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
             }
         }
+
+        return itemList;
     }
 }
