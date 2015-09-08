@@ -625,7 +625,7 @@ public class DictProcessorTest
                                     case Node.TEXT_NODE:
                                         System.out.println("Node type: text node");
                                         System.out.println("Node value: " + node.getText());
-                                            if (node.getText().startsWith("as, ")) {
+                                        if (node.getText().startsWith("as, ")) {
                                             StringBuffer sb = new StringBuffer(node.getText());
                                             int insertPoint = sb.indexOf("as, ") + 4;
                                             sb.insert(insertPoint, "\"");
@@ -636,7 +636,6 @@ public class DictProcessorTest
                             }
                             defNode.addText("\"");
                         }
-                        DictUtils.convertElement(defNode);
                     }
                     return 1;
                 }

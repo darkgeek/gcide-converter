@@ -59,7 +59,7 @@ public class DictProcessor {
                     quirksMap.get(currElement.getName()).process(currElement);
                 }
                 // Post process for the element
-                DictUtils.convertElement(currElement);
+                postElementProcess(currElement);
             }
             if (currentDictItem != null) {
                 currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
@@ -72,5 +72,21 @@ public class DictProcessor {
         }
 
         return itemList;
+    }
+
+    private void postElementProcess(Element element) {
+        for (Iterator i = element.elementIterator(); i.hasNext(); ) {
+            Element child = (Element) i.next();
+            postElementProcess(child);
+        }
+
+        String elemName = element.getName();
+        Set<String> wordsNotToBeProcessed = new HashSet<String>(Arrays.asList("br", "p"));
+
+        if (wordsNotToBeProcessed.contains(elemName))
+            return;
+
+        element.setName("div");
+        element.addAttribute("class", elemName);
     }
 }
