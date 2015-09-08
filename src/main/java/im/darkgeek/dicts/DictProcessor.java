@@ -5,17 +5,14 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by justin on 15-8-28.
  */
 public class DictProcessor {
     private String dictContents;
-    private Map<String, Callback> quirksMap;
+    private Map<String, Callback> quirksMap = new HashMap<String, Callback>(5);
 
     public DictProcessor loadXML(String dictContentsXML) {
         dictContents = dictContentsXML;
@@ -23,16 +20,8 @@ public class DictProcessor {
         return this;
     }
 
-    public DictProcessor setQuirksCallbacks(Map<String, Callback> quirksMap) {
-        this.quirksMap = quirksMap;
-
-        return this;
-    }
-
     public DictProcessor addQuirk(String tagname, Callback callback) {
-        if (quirksMap != null) {
-            quirksMap.put(tagname, callback);
-        }
+        quirksMap.put(tagname, callback);
 
         return this;
     }
@@ -65,10 +54,20 @@ public class DictProcessor {
                     currentDictItem.setWord(currText);
                     currentDictItem.setExplanation("");
                 }
-                // TODO Handle other kinds of elements
+                // Handle other kinds of elements specifically
+                if (quirksMap != null && quirksMap.containsKey(currElement.getName())) {
+                    quirksMap.get(currElement.getName()).process(currElement);
+                }
+                // Post process for the element
+                DictUtils.convertElement(currElement);
             }
             if (currentDictItem != null) {
                 currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
+            }
+
+            // Add the last word in XML
+            if (!i.hasNext()) {
+                itemList.add(currentDictItem);
             }
         }
 

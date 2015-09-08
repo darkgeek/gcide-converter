@@ -22,4 +22,12 @@ public class DictItem {
     public void setExplanation(String explanation) {
         this.explanation = explanation;
     }
+
+    @Override
+    public String toString() {
+        return "DictItem{" +
+                "word='" + word + '\'' +
+                ", explanation='" + explanation + '\'' +
+                '}';
+    }
 }
