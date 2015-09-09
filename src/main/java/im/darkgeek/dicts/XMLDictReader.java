@@ -1,6 +1,9 @@
 package im.darkgeek.dicts;
 
 import org.apache.commons.io.FileUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,30 +12,23 @@ import java.io.IOException;
  * Created by justin on 15-8-28.
  */
 public class XMLDictReader {
-    private XMLDictReader reader = new XMLDictReader();
-    private String entityCache = "";
+    private static XMLDictReader reader = new XMLDictReader();
 
-    public void loadEntity(File entityXMLFile) {
-        try {
-            entityCache = FileUtils.readFileToString(entityXMLFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String loadDict(File dictXMLFile) {
+    public String loadRawDict(String dictXMLFilePath) {
         String dictContent = "";
 
         try {
-            dictContent = FileUtils.readFileToString(dictXMLFile);
+            dictContent = FileUtils.readFileToString(new File(dictXMLFilePath));
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
-        return entityCache + dictContent;
+        return dictContent;
     }
 
-    public XMLDictReader getInstance() {
+    public static XMLDictReader getInstance() {
         return reader;
     }
 

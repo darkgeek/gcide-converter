@@ -6,6 +6,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by justin on 15-8-28.
@@ -41,33 +42,38 @@ public class DictProcessor {
 
         DictItem currentDictItem = null;
         Element root = document.getRootElement();
-        for (Iterator i = root.elementIterator("p"); i.hasNext();) {
-            Element pElement = (Element) i.next();
-            for (Iterator j = pElement.elementIterator(); j.hasNext();) {
-                Element currElement = (Element) j.next();
-                if (currElement.getName().equals("ent")) {
-                    String currText = currElement.getTextTrim();
-                    if (currentDictItem != null) {
-                        itemList.add(currentDictItem);
+        for (Iterator k = root.elementIterator("body"); k.hasNext(); ) {
+            Element bodyElement = (Element) k.next();
+            for (Iterator i = bodyElement.elementIterator("p"); i.hasNext();) {
+                Element pElement = (Element) i.next();
+                if (isToBeOmitted(pElement))
+                    continue;
+                for (Iterator j = pElement.elementIterator(); j.hasNext();) {
+                    Element currElement = (Element) j.next();
+                    if (currElement.getName().equals("ent")) {
+                        String currText = currElement.getTextTrim();
+                        if (currentDictItem != null) {
+                            itemList.add(currentDictItem);
+                        }
+                        currentDictItem = new DictItem();
+                        currentDictItem.setWord(currText);
+                        currentDictItem.setExplanation("");
                     }
-                    currentDictItem = new DictItem();
-                    currentDictItem.setWord(currText);
-                    currentDictItem.setExplanation("");
+                    // Handle other kinds of elements specifically
+                    if (quirksMap != null && quirksMap.containsKey(currElement.getName())) {
+                        quirksMap.get(currElement.getName()).process(currElement);
+                    }
+                    // Post process for the element
+                    postElementProcess(currElement);
                 }
-                // Handle other kinds of elements specifically
-                if (quirksMap != null && quirksMap.containsKey(currElement.getName())) {
-                    quirksMap.get(currElement.getName()).process(currElement);
+                if (currentDictItem != null) {
+                    currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
                 }
-                // Post process for the element
-                postElementProcess(currElement);
-            }
-            if (currentDictItem != null) {
-                currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
-            }
 
-            // Add the last word in XML
-            if (!i.hasNext()) {
-                itemList.add(currentDictItem);
+                // Add the last word in XML
+                if (!i.hasNext()) {
+                    itemList.add(currentDictItem);
+                }
             }
         }
 
@@ -86,7 +92,19 @@ public class DictProcessor {
         if (wordsNotToBeProcessed.contains(elemName))
             return;
 
-        element.setName("div");
+        element.setName("span");
         element.addAttribute("class", elemName);
+    }
+
+    /**
+     * Omit element that is mostly used for comment or metadata
+     * @param element The element to be checked
+     * @return whether this element should be omitted
+     */
+    private boolean isToBeOmitted(Element element) {
+        String elementXML = element.asXML();
+        Pattern pattern = Pattern.compile("^(<p><!--|<p><centered>)");
+
+        return pattern.matcher(elementXML).lookingAt();
     }
 }
