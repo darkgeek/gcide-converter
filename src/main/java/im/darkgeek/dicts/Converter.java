@@ -1,22 +1,17 @@
 package im.darkgeek.dicts;
 
-import junit.framework.TestCase;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.junit.Test;
+import org.dom4j.*;
 
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by justin on 15-9-8.
+ * Hello world!
+ *
  */
-public class DictProcessorTest
-    extends TestCase {
-
-    @Test
-    public void testGenerate() {
+public class Converter
+{
+    public static void main( String[] args ) throws DocumentException {
         XMLDictReader reader = XMLDictReader.getInstance();
         DictProcessor dictProcessor = new DictProcessor();
         Callback addBr = new Callback() {
@@ -61,13 +56,13 @@ public class DictProcessorTest
         };
 
         System.setProperty("entityExpansionLimit", "640000");
+        System.out.println(System.getProperty("user.dir"));
         List<DictItem> list = dictProcessor
                                 .loadXML(reader.loadRawDict("gcide.xml"))
                                 .addQuirk("ety", addBr)
                                 .addQuirk("pos", addBr)
                                 .addQuirk("def", wrapQuoteToAsInDef)
                                 .generate();
-        // The word items size must be 131560
-        assertEquals(131560, list.size());
+        System.out.println("Size: " + list.size());
     }
 }

@@ -46,14 +46,21 @@ public class DictProcessor {
             Element bodyElement = (Element) k.next();
             for (Iterator i = bodyElement.elementIterator("p"); i.hasNext();) {
                 Element pElement = (Element) i.next();
-                if (isToBeOmitted(pElement))
+                // Add the last word in XML
+                if (!i.hasNext()) {
+                    itemList.add(currentDictItem);
+                    System.out.println("Added (end): " + currentDictItem.getWord());
+                }
+                if (isToBeOmitted(pElement)) {
                     continue;
+                }
                 for (Iterator j = pElement.elementIterator(); j.hasNext();) {
                     Element currElement = (Element) j.next();
                     if (currElement.getName().equals("ent")) {
                         String currText = currElement.getTextTrim();
                         if (currentDictItem != null) {
                             itemList.add(currentDictItem);
+                            System.out.println("Added: " + currentDictItem.getWord());
                         }
                         currentDictItem = new DictItem();
                         currentDictItem.setWord(currText);
@@ -70,10 +77,6 @@ public class DictProcessor {
                     currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
                 }
 
-                // Add the last word in XML
-                if (!i.hasNext()) {
-                    itemList.add(currentDictItem);
-                }
             }
         }
 
