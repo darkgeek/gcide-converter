@@ -13,7 +13,7 @@ public class DictGenerator {
             "import slob\n" +
             "with slob.create('gcide.slob') as w:\n";
     private static String GENERATOR_TEMPLATE =
-            "    w.add('#DEFINATION#'.encode('utf-8'), '#WORD#', content_type='text/plain; charset=utf-8')";
+            "    w.add(\"\"\"#DEFINATION#\"\"\".encode('utf-8'), \"\"\"#WORD#\"\"\", content_type='text/html; charset=utf-8')";
     private static final String SCRIPT_NAME = "dict_creator.py";
 
     public static void createGeneratorScript(List<DictItem> items) {

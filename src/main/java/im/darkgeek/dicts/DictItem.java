@@ -26,9 +26,7 @@ public class DictItem {
     private String handleUnsafeChars(String raw) {
         return
                 raw.replace("\n", "")
-                   .replace("\r", "")
-                   .replace("\t", "")
-                   .replace("'", "\\'");
+                   .replace("\r", "");
     }
 
     @Override
