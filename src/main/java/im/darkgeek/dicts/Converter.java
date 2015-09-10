@@ -64,5 +64,6 @@ public class Converter
                                 .addQuirk("def", wrapQuoteToAsInDef)
                                 .generate();
         System.out.println("Size: " + list.size());
+        DictGenerator.createGeneratorScript(list);
     }
 }

@@ -110,4 +110,5 @@ public class DictProcessor {
 
         return pattern.matcher(elementXML).lookingAt();
     }
+
 }

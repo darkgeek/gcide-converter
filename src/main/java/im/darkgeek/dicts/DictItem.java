@@ -12,7 +12,7 @@ public class DictItem {
     }
 
     public void setWord(String word) {
-        this.word = word;
+        this.word = handleUnsafeChars(word);
     }
 
     public String getExplanation() {
@@ -20,7 +20,15 @@ public class DictItem {
     }
 
     public void setExplanation(String explanation) {
-        this.explanation = explanation;
+        this.explanation = handleUnsafeChars(explanation);
+    }
+
+    private String handleUnsafeChars(String raw) {
+        return
+                raw.replace("\n", "")
+                   .replace("\r", "")
+                   .replace("\t", "")
+                   .replace("'", "\\'");
     }
 
     @Override
