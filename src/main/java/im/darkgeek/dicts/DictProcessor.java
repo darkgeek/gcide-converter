@@ -15,6 +15,11 @@ public class DictProcessor {
     private String dictContents;
     private Map<String, Callback> quirksMap = new HashMap<String, Callback>(5);
 
+    private static class CompoundDictItem {
+        public List<String> words = new ArrayList<String>(1);
+        public String explanation = "";
+    }
+
     public DictProcessor loadXML(String dictContentsXML) {
         dictContents = dictContentsXML;
 
@@ -40,31 +45,34 @@ public class DictProcessor {
             return new ArrayList<DictItem>(1);
         }
 
-        DictItem currentDictItem = null;
+        CompoundDictItem currentDictItem = null;
         Element root = document.getRootElement();
         for (Iterator k = root.elementIterator("body"); k.hasNext(); ) {
             Element bodyElement = (Element) k.next();
             for (Iterator i = bodyElement.elementIterator("p"); i.hasNext();) {
                 Element pElement = (Element) i.next();
+                int entNodeCounts = 0;
                 // Add the last word in XML
                 if (!i.hasNext()) {
-                    itemList.add(currentDictItem);
-                    System.out.println("Added (end): " + currentDictItem.getWord());
+                    addDictItems(currentDictItem, itemList);
                 }
                 if (isToBeOmitted(pElement)) {
                     continue;
                 }
                 for (Iterator j = pElement.elementIterator(); j.hasNext();) {
                     Element currElement = (Element) j.next();
+                    // Every <ent> node in <p> indicates a word, and there might be more than one <ent> nodes
+                    // in this <p>, that all have the same definition, so this is the reason why we use CompoundDictItem
+                    // here
                     if (currElement.getName().equals("ent")) {
-                        String currText = currElement.getTextTrim();
-                        if (currentDictItem != null) {
-                            itemList.add(currentDictItem);
-                            System.out.println("Added: " + currentDictItem.getWord());
+                        String word = currElement.getTextTrim();
+                        entNodeCounts++;
+                        if (entNodeCounts == 1) {
+                            // If it's the first <ent> node, it indicates the end of the previous word(s)
+                            addDictItems(currentDictItem, itemList);
+                            currentDictItem = new CompoundDictItem();
                         }
-                        currentDictItem = new DictItem();
-                        currentDictItem.setWord(currText);
-                        currentDictItem.setExplanation("");
+                        currentDictItem.words.add(word);
                     }
                     // Handle other kinds of elements specifically
                     if (quirksMap != null && quirksMap.containsKey(currElement.getName())) {
@@ -74,13 +82,30 @@ public class DictProcessor {
                     postElementProcess(currElement);
                 }
                 if (currentDictItem != null) {
-                    currentDictItem.setExplanation(currentDictItem.getExplanation() + pElement.asXML());
+                    currentDictItem.explanation = currentDictItem.explanation + pElement.asXML();
                 }
 
             }
         }
 
         return itemList;
+    }
+
+    private void addDictItems(CompoundDictItem compoundDictItem, List<DictItem> itemList) {
+        if (compoundDictItem == null || itemList == null)
+            return;
+
+        if (compoundDictItem.words.size() > 2) {
+            System.out.println("size: " + compoundDictItem.words.size() + " === " + compoundDictItem.words.get(0));
+        }
+        for (String word : compoundDictItem.words) {
+            DictItem dictItem = new DictItem();
+            dictItem.setWord(word);
+            dictItem.setExplanation(compoundDictItem.explanation);
+
+            itemList.add(dictItem);
+//            System.out.println("Add new item: " + dictItem.getWord());
+        }
     }
 
     private void postElementProcess(Element element) {

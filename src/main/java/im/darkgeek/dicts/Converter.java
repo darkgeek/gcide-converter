@@ -26,19 +26,19 @@ public class Converter
                     for (Iterator j = element.elementIterator(); j.hasNext();) {
                         Element defNode = (Element) j.next();
                         if (defNode.getName().equals("as")) {
-                            System.out.println(defNode.asXML());
+//                            System.out.println(defNode.asXML());
                             List contents = defNode.content();
                             Iterator iterator = contents.iterator();
                             while (iterator.hasNext()) {
                                 Node node = (Node) iterator.next();
                                 switch (node.getNodeType()) {
                                     case Node.ELEMENT_NODE:
-                                        System.out.println("Node type: element node");
-                                        System.out.println("Node value: " + node.asXML());
+//                                        System.out.println("Node type: element node");
+//                                        System.out.println("Node value: " + node.asXML());
                                         break;
                                     case Node.TEXT_NODE:
-                                        System.out.println("Node type: text node");
-                                        System.out.println("Node value: " + node.getText());
+//                                        System.out.println("Node type: text node");
+//                                        System.out.println("Node value: " + node.getText());
                                         if (node.getText().startsWith("as, ")) {
                                             StringBuffer sb = new StringBuffer(node.getText());
                                             int insertPoint = sb.indexOf("as, ") + 4;
