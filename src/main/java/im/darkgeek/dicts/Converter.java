@@ -64,6 +64,10 @@ public class Converter
                                 .addQuirk("def", wrapQuoteToAsInDef)
                                 .generate();
         System.out.println("Size: " + list.size());
+        for (DictItem dictItem : list) {
+            if (dictItem.getWord().startsWith("Un-"))
+                System.out.println(dictItem);
+        }
         DictGenerator.createGeneratorScript(list);
     }
 }

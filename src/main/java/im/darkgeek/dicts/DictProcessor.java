@@ -49,6 +49,7 @@ public class DictProcessor {
         Element root = document.getRootElement();
         for (Iterator k = root.elementIterator("body"); k.hasNext(); ) {
             Element bodyElement = (Element) k.next();
+            pNodeLoop:
             for (Iterator i = bodyElement.elementIterator("p"); i.hasNext();) {
                 Element pElement = (Element) i.next();
                 int entNodeCounts = 0;
@@ -66,6 +67,11 @@ public class DictProcessor {
                     // here
                     if (currElement.getName().equals("ent")) {
                         String word = currElement.getTextTrim();
+                        if (isMarkwordOfUnList(word)) {
+                            // Process several long lists of Un- prefixed words
+                            processLonglistUnPrefixedWords(pElement, itemList, currentDictItem);
+                            continue pNodeLoop;
+                        }
                         entNodeCounts++;
                         if (entNodeCounts == 1) {
                             // If it's the first <ent> node, it indicates the end of the previous word(s)
@@ -134,6 +140,72 @@ public class DictProcessor {
         Pattern pattern = Pattern.compile("^(<p><!--|<p><centered>)");
 
         return pattern.matcher(elementXML).lookingAt();
+    }
+
+    /**
+     * Check if the given value of <ent> node is the "markword" of the "Un-" list
+     * Note: The "markword" is the start word of a long list of Un- prefixed words, in "Un-"'s definition.
+     *       For instance, see the snippets below:
+     *
+     *       <p><ent>Un-</ent><br/>
+     *       <hw>Un-</hw>. <ety>[OE. &amp; AS. <ets>un-</ets>; akin to OFries. <ets>un-</ets>, D. <ets>on-</ets>
+     *       ...skip...
+     *       <br/>
+     *       <p><ent>Undoubtful</ent><br/>
+     *       <ent>Undomestic</ent><br/>
+     *       <ent>Undivine</ent><br/>
+     *       <ent>Undividable</ent><br/>
+     *       <ent>Undistinguishable</ent><br/>
+     *       <ent>Undissolvable</ent><br/>
+     *       <ent>Undiscoverable</ent><br/>
+     *       <ent>Undiscordant</ent><br/>
+     *       ...skip...
+     *       <hw>Undoubtful</hw>  <def>See <er>doubtful</er>.</def><br/>
+     *       <colbreak/><!-- end of subcol 1 (of 3) in col 3 (of 3) p. 1562.
+     *          ca. 110 entries per sub column
+     *       --><br/>
+     *       [<source>1913 Webster</source>]</p>
+     *
+     *       <p><ent>Unheritable</ent><br/>
+     *       <ent>Unhelpful</ent><br/>
+     *       <ent>Unheedful</ent><br/>
+     *       ...skip...
+     *
+     *       The first line denotes this is the word "Un-", whose definitions are right below. There are several lists
+     *       whose words have "Un" prefixed, seperated by different <p></p> nodes. The first list starts with word
+     *       "Undoubtful" at "<p><ent>Undoubtful</ent><br/>" line, the second list starts with "Unheritable" at
+     *       "<p><ent>Unheritable</ent><br/>" line, and so on. Both "Undoubtful" and "Unheritable" are "markword".
+     * @param entValue the <ent> node value
+     * @return whether it's a "markword"
+     */
+    private boolean isMarkwordOfUnList(String entValue) {
+        Set<String> markwords = new HashSet<String>(Arrays.asList("Undoubtful", "Unheritable", "Unobjectionable",
+                "Unzealous", "Unyielded", "Unyielding"));
+
+        return markwords.contains(entValue);
+    }
+
+    private void processLonglistUnPrefixedWords(Element pElement, List<DictItem> itemList, CompoundDictItem unCDictItem) {
+        CompoundDictItem compoundDictItem = new CompoundDictItem();
+
+        for (Iterator i = pElement.elementIterator(); i.hasNext(); ) {
+            Element currElement = (Element) i.next();
+
+            if (currElement.getName().equals("hw")) {
+                compoundDictItem.words.add(currElement.getTextTrim());
+            }
+            else if (currElement.getName().equals("def")) {
+                postElementProcess(currElement);
+                compoundDictItem.explanation = currElement.asXML();
+                addDictItems(compoundDictItem, itemList);
+                compoundDictItem = new CompoundDictItem();
+            }
+            else if (currElement.getName().equals("sd")) {
+                postElementProcess(currElement);
+                unCDictItem.explanation += "<p>" + currElement.asXML() +
+                        "<span class=\"def\">" + ((Element) i.next()).getTextTrim() + "</span></p>";
+            }
+        }
     }
 
 }
