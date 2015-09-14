@@ -123,8 +123,12 @@ public class DictProcessor {
         if (wordsNotToBeProcessed.contains(elemName))
             return;
 
-        element.setName("span");
-        element.addAttribute("class", elemName);
+        if (elemName.equals("pbr"))
+            element.setName("br");
+        else {
+            element.setName("span");
+            element.addAttribute("class", elemName);
+        }
     }
 
     /**

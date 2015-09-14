@@ -21,8 +21,27 @@ public class Converter
                         return 1;
                 }
         };
-        Callback handleCsBlock = new Callback() {
+        Callback handleComplexListBlock = new Callback() {
             public int process(Element element) {
+                String noteText = element.getTextTrim();
+
+                // remove the "-" sign at the end
+                if (noteText.endsWith("-")) {
+                    element.setText(noteText.substring(0, noteText.length() - 2));
+                    System.out.println("-->" + element.getTextTrim() + "<--");
+                }
+
+                List contents = element.content();
+                Iterator iterator = contents.iterator();
+                // Remove the annoying "--" sign
+                while (iterator.hasNext()) {
+                    Node node = (Node) iterator.next();
+                    if (node.getNodeType() == Node.TEXT_NODE) {
+                        if (node.getText().trim().equals("--"))
+                            node.setText("");
+                    }
+                }
+
                 boolean isFirstColNode = true;
                 for (Iterator i = element.elementIterator(); i.hasNext();) {
                     Element csNode = (Element) i.next();
@@ -81,7 +100,8 @@ public class Converter
                                 .loadXML(reader.loadRawDict("gcide.xml"))
                                 .addQuirk("ety", addBr)
                                 .addQuirk("pos", addBr)
-                                .addQuirk("cs", handleCsBlock)
+                                .addQuirk("cs", handleComplexListBlock)
+                                .addQuirk("note", handleComplexListBlock)
                                 .addQuirk("def", wrapQuoteToAsInDef)
                                 .generate();
         System.out.println("Size: " + list.size());
