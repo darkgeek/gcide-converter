@@ -101,9 +101,6 @@ public class DictProcessor {
         if (compoundDictItem == null || itemList == null)
             return;
 
-        if (compoundDictItem.words.size() > 2) {
-            System.out.println("size: " + compoundDictItem.words.size() + " === " + compoundDictItem.words.get(0));
-        }
         for (String word : compoundDictItem.words) {
             DictItem dictItem = new DictItem();
             dictItem.setWord(word);
@@ -187,6 +184,8 @@ public class DictProcessor {
 
     private void processLonglistUnPrefixedWords(Element pElement, List<DictItem> itemList, CompoundDictItem unCDictItem) {
         CompoundDictItem compoundDictItem = new CompoundDictItem();
+        String unDefTemplate = "<p><span class=\"ent\">#WORD#</span><br/><span class=\"hw\">#WORD#</span><br/>" +
+                "<span class=\"def\">#DEFINITION#</span></p>";
 
         for (Iterator i = pElement.elementIterator(); i.hasNext(); ) {
             Element currElement = (Element) i.next();
@@ -196,7 +195,14 @@ public class DictProcessor {
             }
             else if (currElement.getName().equals("def")) {
                 postElementProcess(currElement);
-                compoundDictItem.explanation = currElement.asXML();
+//                System.out.println(currElement.asXML());
+                // This fixes the issue to parse the line:
+                // "<hw>Unemphatic</hw>  <def>See <er>emphatic</er>.</def>  <def>See <er>employable</er>.</def>"
+                // It's strange to see one <hw>, followed by two <def> blocks. I think the latter one is misplaced.
+                if (compoundDictItem.words.size() == 0)
+                    continue;
+                compoundDictItem.explanation = unDefTemplate.replace("#WORD#", compoundDictItem.words.get(0))
+                                                            .replace("#DEFINITION#", currElement.asXML());
                 addDictItems(compoundDictItem, itemList);
                 compoundDictItem = new CompoundDictItem();
             }

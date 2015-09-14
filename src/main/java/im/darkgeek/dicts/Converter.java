@@ -21,6 +21,26 @@ public class Converter
                         return 1;
                 }
         };
+        Callback handleCsBlock = new Callback() {
+            public int process(Element element) {
+                boolean isFirstColNode = true;
+                for (Iterator i = element.elementIterator(); i.hasNext();) {
+                    Element csNode = (Element) i.next();
+                    if (csNode.getName().equals("sd")) {
+                        List elements = csNode.getParent().elements();
+                        elements.add(elements.indexOf(csNode), DocumentHelper.createElement("br"));
+                    }
+                    else if (csNode.getName().equals("col") || csNode.getName().equals("mcol")) {
+                        List elements = csNode.getParent().elements();
+                        if (!isFirstColNode)
+                            elements.add(elements.indexOf(csNode), DocumentHelper.createElement("br"));
+                        elements.add(elements.indexOf(csNode), DocumentHelper.createElement("br"));
+                        isFirstColNode = false;
+                    }
+                }
+                return 1;
+            }
+        };
         Callback wrapQuoteToAsInDef = new Callback() {
                 public int process(Element element) {
                     for (Iterator j = element.elementIterator(); j.hasNext();) {
@@ -61,13 +81,10 @@ public class Converter
                                 .loadXML(reader.loadRawDict("gcide.xml"))
                                 .addQuirk("ety", addBr)
                                 .addQuirk("pos", addBr)
+                                .addQuirk("cs", handleCsBlock)
                                 .addQuirk("def", wrapQuoteToAsInDef)
                                 .generate();
         System.out.println("Size: " + list.size());
-        for (DictItem dictItem : list) {
-            if (dictItem.getWord().startsWith("Un-"))
-                System.out.println(dictItem);
-        }
         DictGenerator.createGeneratorScript(list);
     }
 }
