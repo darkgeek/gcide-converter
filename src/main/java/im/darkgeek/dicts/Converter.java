@@ -83,6 +83,28 @@ public class Converter
                 return 1;
             }
         };
+        Callback changeToHypeLink = new Callback() {
+            public int process(Element element) {
+                element.setName("a");
+                element.addAttribute("href", element.getTextTrim());
+                return 1;
+            }
+        };
+        Callback enhanceQAUblock = new Callback() {
+            public int process(Element element) {
+                List qauContents = element.content();
+                Iterator iterator = qauContents.iterator();
+
+                while (iterator.hasNext()) {
+                    Node node = (Node) iterator.next();
+                    if (node.getNodeType() == Node.TEXT_NODE) {
+                        node.setText("--" + node.getText());
+                        break;
+                    }
+                }
+                return 1;
+            }
+        };
 
         System.setProperty("entityExpansionLimit", "640000");
         System.out.println(System.getProperty("user.dir"));
@@ -96,6 +118,9 @@ public class Converter
                                 .addQuirk("sd", addBRbefore)
                                 .addQuirk("as", handleASblock)
                                 .addQuirk("pbr", rewriteElementNameToBR)
+                                .addQuirk("er", changeToHypeLink)
+                                .addQuirk("qau", enhanceQAUblock)
+                                .addQuirk("au", enhanceQAUblock)
                                 .generate();
         System.out.println("Size: " + list.size());
         DictGenerator.createGeneratorScript(list);

@@ -114,18 +114,10 @@ public class DictProcessor {
         }
 
         String elemName = element.getName();
-        Set<String> wordsNotToBeProcessed = new HashSet<String>(Arrays.asList("br", "p", "div", "span"));
-
-        if (wordsNotToBeProcessed.contains(elemName))
-            return;
-
-        // Handle other kinds of elements specifically
+        // Handle elements specifically
         if (quirksMap != null && quirksMap.containsKey(elemName)) {
             quirksMap.get(elemName).process(element);
         }
-
-//        element.setName("span");
-//        element.addAttribute("class", elemName);
     }
 
     /**
