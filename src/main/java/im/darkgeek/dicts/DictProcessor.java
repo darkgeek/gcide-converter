@@ -80,10 +80,6 @@ public class DictProcessor {
                         }
                         currentDictItem.words.add(word);
                     }
-                    // Handle other kinds of elements specifically
-                    if (quirksMap != null && quirksMap.containsKey(currElement.getName())) {
-                        quirksMap.get(currElement.getName()).process(currElement);
-                    }
                     // Post process for the element
                     postElementProcess(currElement);
                 }
@@ -118,17 +114,18 @@ public class DictProcessor {
         }
 
         String elemName = element.getName();
-        Set<String> wordsNotToBeProcessed = new HashSet<String>(Arrays.asList("br", "p"));
+        Set<String> wordsNotToBeProcessed = new HashSet<String>(Arrays.asList("br", "p", "div", "span"));
 
         if (wordsNotToBeProcessed.contains(elemName))
             return;
 
-        if (elemName.equals("pbr"))
-            element.setName("br");
-        else {
-            element.setName("span");
-            element.addAttribute("class", elemName);
+        // Handle other kinds of elements specifically
+        if (quirksMap != null && quirksMap.containsKey(elemName)) {
+            quirksMap.get(elemName).process(element);
         }
+
+//        element.setName("span");
+//        element.addAttribute("class", elemName);
     }
 
     /**
@@ -188,8 +185,8 @@ public class DictProcessor {
 
     private void processLonglistUnPrefixedWords(Element pElement, List<DictItem> itemList, CompoundDictItem unCDictItem) {
         CompoundDictItem compoundDictItem = new CompoundDictItem();
-        String unDefTemplate = "<p><span class=\"ent\">#WORD#</span><br/><span class=\"hw\">#WORD#</span><br/>" +
-                "<span class=\"def\">#DEFINITION#</span></p>";
+        String unDefTemplate = "<p><ent>#WORD#</ent><br/><hw>#WORD#</hw><br/>" +
+                "<def>#DEFINITION#</def></p>";
 
         for (Iterator i = pElement.elementIterator(); i.hasNext(); ) {
             Element currElement = (Element) i.next();
@@ -212,8 +209,8 @@ public class DictProcessor {
             }
             else if (currElement.getName().equals("sd")) {
                 postElementProcess(currElement);
-                unCDictItem.explanation += "<p>" + currElement.asXML() +
-                        "<span class=\"def\">" + ((Element) i.next()).getTextTrim() + "</span></p>";
+                unCDictItem.explanation += "<p><br/>" + currElement.asXML() +
+                        "<def>" + ((Element) i.next()).getTextTrim() + "</def></p>";
             }
         }
     }
