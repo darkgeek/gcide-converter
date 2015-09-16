@@ -105,6 +105,12 @@ public class Converter
                 return 1;
             }
         };
+        Callback changeToH1 = new Callback() {
+            public int process(Element element) {
+                element.setName("h2");
+                return 1;
+            }
+        };
 
         System.setProperty("entityExpansionLimit", "640000");
         System.out.println(System.getProperty("user.dir"));
@@ -121,6 +127,7 @@ public class Converter
                                 .addQuirk("er", changeToHypeLink)
                                 .addQuirk("qau", enhanceQAUblock)
                                 .addQuirk("au", enhanceQAUblock)
+                                .addQuirk("ent", changeToH1)
                                 .generate();
         System.out.println("Size: " + list.size());
         DictGenerator.createGeneratorScript(list);
