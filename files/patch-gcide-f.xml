@@ -1,0 +1,19 @@
+*** Shares/gcide_xml-0.51/xml_files/gcide_f.xml	2015-06-12 04:29:24.000000000 +0800
+--- /tmp/gcide_f.xml	2015-09-19 10:59:40.352428000 +0800
+***************
+*** 26598,26604 ****
+  [<source>PJC</source>]</p>
+  
+  <p><ent>format</ent><br/>
+! <hw>format</hw> <pos>v. t.</pos> <def>to set into a specific format; -- of printed matter or data recorded on a data soorage medium.</def><br/>
+  <syn><b>Syn. --</b> arrange.</syn><br/>
+  [<source>WordNet 1.5</source> <source>+PJC</source>]</p>
+  
+--- 26598,26604 ----
+  [<source>PJC</source>]</p>
+  
+  <p><ent>format</ent><br/>
+! <hw>format</hw> <pos>v. t.</pos> <def>to set into a specific format; -- of printed matter or data recorded on a data storage medium.</def><br/>
+  <syn><b>Syn. --</b> arrange.</syn><br/>
+  [<source>WordNet 1.5</source> <source>+PJC</source>]</p>
+  
