@@ -3,7 +3,10 @@ package im.darkgeek.dicts;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by justin on 15-9-10.
@@ -14,6 +17,8 @@ public class DictGenerator {
             "with slob.create('gcide.slob') as w:\n";
     private static String GENERATOR_TEMPLATE =
             "    w.add(\"\"\"#DEFINATION#\"\"\".encode('utf-8'), \"\"\"#WORD#\"\"\", content_type='text/html; charset=utf-8')";
+    private static String GENERATOR_TAG_TEMPLATE =
+            "    w.tag(\"\"\"#NAME#\"\"\", \"\"\"#VALUE#\"\"\")";
     private static String nightModeCss = "body {\n" +
             "    background-color: black;\n" +
             "    color: gray;\n" +
@@ -76,6 +81,17 @@ public class DictGenerator {
             "}";
     private static String defaultCssLink = "<link rel=\"stylesheet\" href=\"~/css/default.css\" type=\"text/css\">";
     private static String SCRIPT_NAME = "dict_creator.py";
+    private static Map<String, String> tagMap = new HashMap<String, String>(7);
+
+    static {
+        tagMap.put("created.by", "https://github.com/darkgeek/gcide-converter");
+        tagMap.put("license.name", "GNU General Public License v3 or later");
+        tagMap.put("license.url", "http://www.gnu.org/licenses/gpl.html");
+        tagMap.put("source", "http://www.ibiblio.org/webster/");
+        tagMap.put("label", "The Collaborative International Dictionary of English v0.51");
+        tagMap.put("uri", "http://savannah.gnu.org/projects/gcide/");
+        tagMap.put("copyright", "Public Domain");
+    }
 
     public static void createGeneratorScript(List<DictItem> items) {
         if (items == null)
@@ -85,7 +101,20 @@ public class DictGenerator {
         try {
             printWriter = new PrintWriter(SCRIPT_NAME, "UTF-8");
 
+            // write script header
             printWriter.print(GENERATOR_SCRIPT_HEADER);
+
+            // write tags
+            Set<String> tagNames = tagMap.keySet();
+            for (String name : tagNames) {
+                printWriter.println(
+                        GENERATOR_TAG_TEMPLATE
+                            .replace("#NAME#", name)
+                            .replace("#VALUE#", tagMap.get(name))
+                );
+            }
+
+            // write css resources
             printWriter.println(
                     GENERATOR_TEMPLATE
                         .replace("#DEFINATION#", nightModeCss)
@@ -97,6 +126,7 @@ public class DictGenerator {
                         .replace("#WORD#", "~/css/default.css")
             );
 
+            // write words
             for (DictItem item : items) {
                 printWriter.println(
                         GENERATOR_TEMPLATE
