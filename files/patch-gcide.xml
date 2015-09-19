@@ -1,0 +1,73 @@
+*** Shares/gcide_xml-0.51/xml_files/gcide.xml	2015-06-12 05:12:04.000000000 +0800
+--- Downloads/gcide.xml	2015-09-19 10:35:30.467341000 +0800
+***************
+*** 214,247 ****
+  <!-- Unicode                  FB00 - FB4F Alphabetic Presentation Forms -->
+  	<!ENTITY filig        '&#xFB01;'> <!-- ISOpub, latin small ligature fi -->
+  	<!ENTITY fllig        '&#xFB02;'> <!-- ISOpub, laton small ligature fl -->
+  	<!ENTITY ffllig       '&#xFB04;'> <!-- ISOpub, latin small ligature ffl -->
+  <!-- Unicode                  FFF0 - FFFF Specials -->
+! 	<!ENTITY Crev_        '&#xFFFD;'>
+! 	<!ENTITY aitalic_     '&#xFFFD;'>
+! 	<!ENTITY asuml_       '&#xFFFD;'>
+! 	<!ENTITY auptack_     '&#xFFFD;'>
+! 	<!ENTITY csdot_       '&#xFFFD;'>
+! 	<!ENTITY deletemark_  '&#xFFFD;'>
+! 	<!ENTITY eitalic_     '&#xFFFD;'>
+! 	<!ENTITY euptack_     '&#xFFFD;'>
+! 	<!ENTITY iuptack_     '&#xFFFD;'>
+! 	<!ENTITY ltilde_      '&#xFFFD;'>
+! 	<!ENTITY mtilde_      '&#xFFFD;'>
+! 	<!ENTITY ncirc_       '&#xFFFD;'>
+! 	<!ENTITY nsmallcap_   '&#xFFFD;'>
+! 	<!ENTITY oobreve_     '&#xFFFD;'>
+! 	<!ENTITY oomacr_      '&#xFFFD;'>
+! 	<!ENTITY ouptack_     '&#xFFFD;'>
+! 	<!ENTITY pause_       '&#xFFFD;'>
+! 	<!ENTITY thlig_       '&#xFFFD;'>
+! 	<!ENTITY unr_         '&#xFFFD;'>
+! 	<!ENTITY uuptack_     '&#xFFFD;'>
+! 	<!ENTITY withdot_     '&#xFFFD;'>
+! 	<!ENTITY ybreve_      '&#xFFFD;'>
+! 	<!ENTITY dotted2_     '&#xFFFD;'>
+! 	<!ENTITY dotted3_     '&#xFFFD;'>
+  
+  	<!ELEMENT CAPTION   (b)*>
+  	<!ELEMENT H1        (#PCDATA)>
+  	<!ELEMENT H2        (#PCDATA)>
+  	<!ELEMENT I         (#PCDATA)>
+--- 214,247 ----
+  <!-- Unicode                  FB00 - FB4F Alphabetic Presentation Forms -->
+  	<!ENTITY filig        '&#xFB01;'> <!-- ISOpub, latin small ligature fi -->
+  	<!ENTITY fllig        '&#xFB02;'> <!-- ISOpub, laton small ligature fl -->
+  	<!ENTITY ffllig       '&#xFB04;'> <!-- ISOpub, latin small ligature ffl -->
+  <!-- Unicode                  FFF0 - FFFF Specials -->
+! 	<!ENTITY Crev_        ' '>
+! 	<!ENTITY aitalic_     '&#x1D622;'>
+! 	<!ENTITY asuml_       'a&#x0324;'>
+! 	<!ENTITY auptack_     'a'>
+! 	<!ENTITY csdot_       'c'>
+! 	<!ENTITY deletemark_  ' '>
+! 	<!ENTITY eitalic_     '&#x1D626;'>
+! 	<!ENTITY euptack_     'e'>
+! 	<!ENTITY iuptack_     'i'>
+! 	<!ENTITY ltilde_      '&#x026B;'>
+! 	<!ENTITY mtilde_      '&#x1D6F;'>
+! 	<!ENTITY ncirc_       '&#x1E4B;'>
+! 	<!ENTITY nsmallcap_   'n'>
+! 	<!ENTITY oobreve_     'o&#x02D8;o'>
+! 	<!ENTITY oomacr_      'o&#x00AF;o'>
+! 	<!ENTITY ouptack_     'o'>
+! 	<!ENTITY pause_       ' '>
+! 	<!ENTITY thlig_       'th'>
+! 	<!ENTITY unr_         'u'>
+! 	<!ENTITY uuptack_     'u'>
+! 	<!ENTITY withdot_     '.'>
+! 	<!ENTITY ybreve_      'y&#x0306;'>
+! 	<!ENTITY dotted2_     '..'>
+! 	<!ENTITY dotted3_     '...'>
+  
+  	<!ELEMENT CAPTION   (b)*>
+  	<!ELEMENT H1        (#PCDATA)>
+  	<!ELEMENT H2        (#PCDATA)>
+  	<!ELEMENT I         (#PCDATA)>
