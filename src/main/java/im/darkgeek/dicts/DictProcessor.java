@@ -177,7 +177,7 @@ public class DictProcessor {
 
     private void processLonglistUnPrefixedWords(Element pElement, List<DictItem> itemList, CompoundDictItem unCDictItem) {
         CompoundDictItem compoundDictItem = new CompoundDictItem();
-        String unDefTemplate = "<p><h1>#WORD#</h1><br/><hw>#WORD#</hw>" +
+        String unDefTemplate = "<p><h2>#WORD#</h2><br/><hw>#WORD#</hw>" +
                 "<def>&nbsp;&nbsp;-&nbsp;&nbsp;#DEFINITION#</def></p>";
 
         for (Iterator i = pElement.elementIterator(); i.hasNext(); ) {
