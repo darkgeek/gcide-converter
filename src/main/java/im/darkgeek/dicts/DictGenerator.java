@@ -94,7 +94,7 @@ public class DictGenerator {
     }
 
     public static void createGeneratorScript(List<DictItem> items) {
-        if (items == null)
+        if (items == null || items.size() == 0)
             return;
 
         PrintWriter printWriter = null;
