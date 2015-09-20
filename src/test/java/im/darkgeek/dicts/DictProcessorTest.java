@@ -4,8 +4,13 @@ import junit.framework.TestCase;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,59 +20,43 @@ import java.util.List;
 public class DictProcessorTest
     extends TestCase {
 
-    @Test
-    public void testGenerate() {
-        XMLDictReader reader = XMLDictReader.getInstance();
-        DictProcessor dictProcessor = new DictProcessor();
-        Callback addBr = new Callback() {
-                public int process(Element element) {
-                        List elements = element.getParent().elements();
-                        elements.add(elements.indexOf(element) + 1, DocumentHelper.createElement("br"));
-                        return 1;
-                }
-        };
-        Callback wrapQuoteToAsInDef = new Callback() {
-                public int process(Element element) {
-                    for (Iterator j = element.elementIterator(); j.hasNext();) {
-                        Element defNode = (Element) j.next();
-                        if (defNode.getName().equals("as")) {
-                            System.out.println(defNode.asXML());
-                            List contents = defNode.content();
-                            Iterator iterator = contents.iterator();
-                            while (iterator.hasNext()) {
-                                Node node = (Node) iterator.next();
-                                switch (node.getNodeType()) {
-                                    case Node.ELEMENT_NODE:
-                                        System.out.println("Node type: element node");
-                                        System.out.println("Node value: " + node.asXML());
-                                        break;
-                                    case Node.TEXT_NODE:
-                                        System.out.println("Node type: text node");
-                                        System.out.println("Node value: " + node.getText());
-                                        if (node.getText().startsWith("as, ")) {
-                                            StringBuffer sb = new StringBuffer(node.getText());
-                                            int insertPoint = sb.indexOf("as, ") + 4;
-                                            sb.insert(insertPoint, "\"");
-                                            node.setText(sb.toString());
-                                        }
-                                        break;
-                                }
-                            }
-                            defNode.addText("\"");
-                        }
-                    }
-                    return 1;
-                }
-        };
+    private static String DICT_TEST_XML_FILE = "/dict_test.xml";
+    private static Path dictTestFilePath;
 
-        System.setProperty("entityExpansionLimit", "640000");
-        List<DictItem> list = dictProcessor
-                                .loadXML(reader.loadRawDict("gcide.xml"))
-                                .addQuirk("ety", addBr)
-                                .addQuirk("pos", addBr)
-                                .addQuirk("def", wrapQuoteToAsInDef)
-                                .generate();
-        // The word items size must be 131560
-        assertEquals(131560, list.size());
+    private static String COMPLEX_DICT_TEST_XML_FILE = "/complex_dict_test.xml";
+    private static Path complexDictTestFilePath;
+
+    private static String MORE_COMPLEX_DICT_TEST_XML_FILE = "/more_complex_dict_test.xml";
+    private static Path moreComplexDictTestFilePath;
+
+    @Before
+    public void loadTestXMLFile() throws URISyntaxException {
+        URL dictTestFileUrl = getClass().getResource(DICT_TEST_XML_FILE);
+        assertNotNull(DICT_TEST_XML_FILE + " is missing", dictTestFileUrl);
+
+        URL complexDictTestFileUrl = getClass().getResource(COMPLEX_DICT_TEST_XML_FILE);
+        assertNotNull(COMPLEX_DICT_TEST_XML_FILE + " is missing", complexDictTestFileUrl);
+
+        URL moreComplexDictTestFileUrl = getClass().getResource(MORE_COMPLEX_DICT_TEST_XML_FILE);
+        assertNotNull(MORE_COMPLEX_DICT_TEST_XML_FILE + " is missing", moreComplexDictTestFileUrl);
+
+        dictTestFilePath = Paths.get(dictTestFileUrl.toURI());
+        complexDictTestFilePath = Paths.get(complexDictTestFileUrl.toURI());
+        moreComplexDictTestFilePath = Paths.get(moreComplexDictTestFileUrl.toURI());
+    }
+
+    @Test
+    public void testSimpleDictItemsGenerate() {
+
+    }
+
+    @Test
+    public void testComplexDictItemsGenerate() {
+
+    }
+
+    @Test
+    public void testMoreComplexDictItemsGenerate() {
+
     }
 }
