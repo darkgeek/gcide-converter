@@ -36,4 +36,21 @@ public class DictItem {
                 ", explanation='" + explanation + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DictItem item = (DictItem) o;
+
+        if (word != null ? !word.equals(item.word) : item.word != null) return false;
+        return !(explanation != null ? !explanation.equals(item.explanation) : item.explanation != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }
