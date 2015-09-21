@@ -53,10 +53,7 @@ public class DictProcessor {
             for (Iterator i = bodyElement.elementIterator("p"); i.hasNext();) {
                 Element pElement = (Element) i.next();
                 int entNodeCounts = 0;
-                // Add the last word in XML
-                if (!i.hasNext()) {
-                    addDictItems(currentDictItem, itemList);
-                }
+
                 if (isToBeOmitted(pElement)) {
                     continue;
                 }
@@ -86,8 +83,10 @@ public class DictProcessor {
                 if (currentDictItem != null) {
                     currentDictItem.explanation = currentDictItem.explanation + pElement.asXML();
                 }
-
             }
+
+            // Add the last word in XML
+            addDictItems(currentDictItem, itemList);
         }
 
         return itemList;
@@ -103,7 +102,7 @@ public class DictProcessor {
             dictItem.setExplanation(compoundDictItem.explanation);
 
             itemList.add(dictItem);
-//            System.out.println("Add new item: " + dictItem.getWord());
+            System.out.println("Add new item: " + dictItem.getWord());
         }
     }
 
