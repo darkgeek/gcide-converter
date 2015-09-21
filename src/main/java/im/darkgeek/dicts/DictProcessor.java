@@ -102,7 +102,6 @@ public class DictProcessor {
             dictItem.setExplanation(compoundDictItem.explanation);
 
             itemList.add(dictItem);
-            System.out.println("Add new item: " + dictItem.getWord());
         }
     }
 
