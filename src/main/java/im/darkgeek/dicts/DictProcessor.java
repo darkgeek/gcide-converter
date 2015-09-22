@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
+ * This class offers simple fluent APIs to process and extract list of words from raw XML dict data
  * Created by justin on 15-8-28.
  */
 public class DictProcessor {
@@ -20,18 +21,33 @@ public class DictProcessor {
         public String explanation = "";
     }
 
+    /**
+     * Load all the dictionary xml files contents to be processed later
+     * @param dictContentsXML dictionary xml files contents
+     * @return this DictProcessor instance
+     */
     public DictProcessor loadXML(String dictContentsXML) {
         dictContents = dictContentsXML;
 
         return this;
     }
 
-    public DictProcessor addQuirk(String tagname, Callback callback) {
-        quirksMap.put(tagname, callback);
+    /**
+     * Bind a Callback instance to a specified element name (the binding is called "Quirk" here)
+     * @param tagName the tag name to which the callback is attached
+     * @param callback the callback
+     * @return this DictProcessor instance
+     */
+    public DictProcessor addQuirk(String tagName, Callback callback) {
+        quirksMap.put(tagName, callback);
 
         return this;
     }
 
+    /**
+     * Analyse and process the raw XML dict contents, and extract a list of DictItem instances to caller
+     * @return A list of DictItem objects, each of which has extracted word and respective definition
+     */
     public List<DictItem> generate() {
         if (dictContents == null || "".equals(dictContents))
             return new ArrayList<DictItem>(1);
@@ -92,6 +108,12 @@ public class DictProcessor {
         return itemList;
     }
 
+    /**
+     * Extract dictionary information from CompoundDictItem instance, generate DictItem instances, and put them in
+     * specified itemList
+     * @param compoundDictItem the CompoundDictItem object to be processed
+     * @param itemList into which the generated DictItem instances to be put
+     */
     private void addDictItems(CompoundDictItem compoundDictItem, List<DictItem> itemList) {
         if (compoundDictItem == null || itemList == null)
             return;
@@ -186,7 +208,6 @@ public class DictProcessor {
             }
             else if (currElement.getName().equals("def")) {
                 postElementProcess(currElement);
-//                System.out.println(currElement.asXML());
                 // This fixes the issue to parse the line:
                 // "<hw>Unemphatic</hw>  <def>See <er>emphatic</er>.</def>  <def>See <er>employable</er>.</def>"
                 // It's strange to see one <hw>, followed by two <def> blocks. I think the latter one is misplaced.

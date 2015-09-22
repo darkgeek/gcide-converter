@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Test on DictGeneratorTest
  * Created by justin on 15-9-20.
  */
 public class DictGeneratorTest {

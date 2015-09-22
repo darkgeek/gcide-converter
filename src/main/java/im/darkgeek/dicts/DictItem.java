@@ -1,6 +1,7 @@
 package im.darkgeek.dicts;
 
 /**
+ * The DictItem class stores extracted words and definitions from raw dict files
  * Created by justin on 15-8-28.
  */
 public class DictItem {

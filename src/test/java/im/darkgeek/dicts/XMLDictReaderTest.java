@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
+ * Test on XMLDictReaderTest
  * Created by justin on 15-9-20.
  */
 public class XMLDictReaderTest {

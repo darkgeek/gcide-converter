@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Generate script (Python script only) to create slob dictionary file
  * Created by justin on 15-9-10.
  */
 public class DictGenerator {
@@ -84,6 +85,7 @@ public class DictGenerator {
     private static Map<String, String> tagMap = new HashMap<String, String>(7);
 
     static {
+        // slob tag info
         tagMap.put("created.by", "https://github.com/darkgeek/gcide-converter");
         tagMap.put("license.name", "GNU General Public License v3 or later");
         tagMap.put("license.url", "http://www.gnu.org/licenses/gpl.html");
@@ -93,6 +95,10 @@ public class DictGenerator {
         tagMap.put("copyright", "Public Domain");
     }
 
+    /**
+     * Generate the python script to create slob file
+     * @param items A list of DictItem instances extracted from raw gcide xml file
+     */
     public static void createGeneratorScript(List<DictItem> items) {
         if (items == null || items.size() == 0)
             return;
