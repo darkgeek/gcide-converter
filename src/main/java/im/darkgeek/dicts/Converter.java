@@ -6,8 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Hello world!
- *
+ * The Main Class that drives this converter app
  */
 public class Converter
 {
